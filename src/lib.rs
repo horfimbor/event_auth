@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize };
 
 #[derive(Deserialize, Serialize)]
 pub struct AccountCreated {
-    uuid: String,
-    name: String,
+    pub uuid: String,
+    pub name: String,
 }
 
 #[cfg(test)]
