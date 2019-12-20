@@ -1,2 +1,2 @@
-# mod_auth
+# event_auth
 public event sent by service_auth
