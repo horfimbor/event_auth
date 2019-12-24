@@ -5,7 +5,7 @@ use crate::AuthEvent::{Created, Login};
 trait PublicEvent {
     fn from_json(event_type: &str, json: &str) -> Self;
     fn stream_name(&self) -> &'static str;
-    fn get_json(&self) -> Result<(&'static str, String),&str>;
+    fn get_json(&self) -> (&str, &str);
 }
 
 const STREAM_NAME: &'static str = "account";
@@ -29,7 +29,7 @@ pub struct LoggedIn {
 pub enum AuthEvent {
     Created(AccountCreated),
     Login(LoggedIn),
-    Empty
+    None
 }
 
 impl PublicEvent for AuthEvent {
@@ -44,7 +44,7 @@ impl PublicEvent for AuthEvent {
                 AuthEvent::Login(login)
             }
             _ => {
-                AuthEvent::Empty
+                AuthEvent::None
             }
         }
     }
@@ -53,16 +53,13 @@ impl PublicEvent for AuthEvent {
         return STREAM_NAME;
     }
 
-    fn get_json(&self) -> Result<(&'static str, String), &str> {
+    fn get_json(&self) -> (&str, &str) {
         match self {
             Created(account_created) => {
-                Ok((ACCOUNT_CREATED, serde_json::to_string(account_created).unwrap()))
+                (ACCOUNT_CREATED, serde_json::to_string(account_created).unwrap().as_str())
             }
             Login(logged_in) => {
-                Ok((LOGGED_IN, serde_json::to_string(logged_in).unwrap()))
-            }
-            _ => {
-                Err("cannot get json from Empty")
+                (LOGGED_IN, serde_json::to_string(logged_in).unwrap().as_str())
             }
         }
     }
@@ -70,20 +67,16 @@ impl PublicEvent for AuthEvent {
 
 #[cfg(test)]
 mod tests {
-    use crate::PublicEvent;
-
     #[test]
     fn it_works() {
-        let data = crate::AuthEvent::Created(
+        let data = crate::AuthEvent::AccountCreated(
             crate::AccountCreated {
                 uuid: "b7b9749f-6baf-43fa-be79-15ead7cafcca".to_string(),
                 name: "Aedius".to_string(),
             });
 
-        let (event_type, event_json) = data.get_json().unwrap();
-
         assert_eq!(
-            event_json,
+            serde_json::to_string(&data).unwrap(),
             r#"{"uuid":"b7b9749f-6baf-43fa-be79-15ead7cafcca","name":"Aedius"}"#);
     }
 }
