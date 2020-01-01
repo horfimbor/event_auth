@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
 use crate::AuthEvent::{Created, Login};
 
-// TODO move to a module
-
 const STREAM_NAME: &'static str = "account";
 const ACCOUNT_CREATED: &'static str = "account_created";
 const LOGGED_IN: &'static str = "logged_in";
