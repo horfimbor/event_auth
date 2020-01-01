@@ -2,11 +2,6 @@ use serde::{Deserialize, Serialize};
 use crate::AuthEvent::{Created, Login};
 
 // TODO move to a module
-trait PublicEvent {
-    fn from_json(event_type: &str, json: &str) -> Self;
-    fn stream_name(&self) -> &'static str;
-    fn get_json(&self) -> Result<(&'static str, String),&str>;
-}
 
 const STREAM_NAME: &'static str = "account";
 const ACCOUNT_CREATED: &'static str = "account_created";
@@ -32,7 +27,7 @@ pub enum AuthEvent {
     Empty
 }
 
-impl PublicEvent for AuthEvent {
+impl mod_event::PublicEvent for AuthEvent {
     fn from_json(event_type: &str, json: &str) -> Self {
         match event_type {
             ACCOUNT_CREATED => {
@@ -70,7 +65,7 @@ impl PublicEvent for AuthEvent {
 
 #[cfg(test)]
 mod tests {
-    use crate::PublicEvent;
+    use mod_event::PublicEvent;
 
     #[test]
     fn it_works() {
