@@ -24,15 +24,7 @@ pub enum AuthEventList {
 }
 
 pub struct GlobalAuthEvent{
-    events: AuthEventList,
-}
-
-impl GlobalAuthEvent {
-    pub fn from_enum(events :AuthEventList )-> Self{
-        GlobalAuthEvent{
-            events
-        }
-    }
+    pub events: AuthEventList,
 }
 
 impl mod_event::PublicEvent for GlobalAuthEvent {
@@ -89,7 +81,9 @@ mod tests {
         };
         let data = crate::AuthEventList::Login(logged_in);
 
-        let obj = crate::GlobalAuthEvent::from_enum( data);
+        let obj = crate::GlobalAuthEvent{
+            events : data
+        } ;
 
         assert_eq!(&obj.stream_name(), &"account");
 
