@@ -20,15 +20,14 @@ pub struct LoggedIn {
 pub enum AuthEventList {
     Created(AccountCreated),
     Login(LoggedIn),
-    Empty
+    Empty,
 }
 
-pub struct GlobalAuthEvent{
+pub struct GlobalAuthEvent {
     pub events: AuthEventList,
 }
 
 impl mod_event::PublicEvent for GlobalAuthEvent {
-
     fn from_json(event_type: &str, json: &str) -> Self {
         match event_type {
             ACCOUNT_CREATED => {
@@ -76,14 +75,14 @@ mod tests {
 
     #[test]
     fn lifecycle_from_enum() {
-        let logged_in = crate::LoggedIn{
-            uuid : "cbae7c51-2068-4cb4-b4c4-e118d675f277".to_string()
+        let logged_in = crate::LoggedIn {
+            uuid: "cbae7c51-2068-4cb4-b4c4-e118d675f277".to_string()
         };
         let data = crate::AuthEventList::Login(logged_in);
 
-        let obj = crate::GlobalAuthEvent{
-            events : data
-        } ;
+        let obj = crate::GlobalAuthEvent {
+            events: data
+        };
 
         assert_eq!(&obj.stream_name(), &"account");
 
@@ -116,5 +115,4 @@ mod tests {
             event_type,
             "account_created");
     }
-
 }
